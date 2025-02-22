@@ -7,20 +7,20 @@ cd "$(dirname "$(readlink -f "$0")")" || {
 
 . ./scripts/utils/log.sh
 
-version=$(yq -r '.version' <Chart.yaml)
-chart_name=$(yq -r '.name' <Chart.yaml)
+chart_name='generic-chart'
+version=$(yq -r '.version' <./"$chart_name"/Chart.yaml)
 tarball="$chart_name-$version.tgz"
 build_path="./docs"
 
 run_command mkdir -p "$build_path" || exit_error "Failed to create build directory."
-run_command helm lint . || exit_error "Helm lint failed."
-run_command helm unittest . || exit_error "Helm unittest failed."
+run_command helm lint "./${chart_name}" || exit_error "Helm lint failed."
+run_command helm unittest "./${chart_name}" -f '../tests/*_test.yaml' || exit_error "Helm unittest failed."
 run_command git fetch --force --tags || exit_error "Failed to fetch tags."
 run_command git tag -l "$version" | run_command_piped_eval ! grep -qFx "$version" 2>/dev/null || exit_error "Tag '$version' already exists, please update Chart.yaml."
 run_command git symbolic-ref --short HEAD | run_command_piped grep -qFx "main" || exit_error "You are not on the main branch."
 [ -z "$(run_command git ls-files --directory --no-empty-directory --exclude-standard -ic)" ] || exit_error "You have unwanted files commited in the repository. Please remove them first."
 [ -z "$(run_command git status --porcelain)" ] || exit_error "There are uncommitted changes / untracked files. Please commit or stash them before releasing."
-run_command helm package . -d "$build_path" || exit_error "Helm package failed."
+run_command helm package "./${chart_name}" -d "$build_path" || exit_error "Helm package failed."
 # shellcheck disable=SC2012
 run_command tar -tzf "${build_path}/${tarball}"
 # shellcheck disable=SC2012
@@ -31,4 +31,4 @@ run_command git commit -m "Release $version" || exit_error "Failed to commit the
 run_command git tag "v$version" || exit_error "Failed to tag the release."
 run_command git push --atomic origin main "v$version" || exit_error "Failed to push the release."
 
-log_info "Helm chart release $(yq -r '.name' <Chart.yaml):$version has been successfully pushed."
+log_info "Helm chart release $chart_name:$version has been successfully pushed."

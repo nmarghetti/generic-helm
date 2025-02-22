@@ -46,7 +46,7 @@ spec:
       containers:
         - name: app
           image: {{ include "chart.deployment.docker-image" ( dict "context" $ "appName" $appName "deployment" $deployment ) }}
-          imagePullPolicy: {{ default "Always" $deployment.image.pullPolicy }}
+          imagePullPolicy: {{ default "Always" (default dict $deployment.image).pullPolicy }}
           {{- if $deployment.ports }}
           ports:
             {{- range $port := $deployment.ports }}

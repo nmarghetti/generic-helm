@@ -11,6 +11,6 @@ tests:
     chart:
       version: 0.0.1
     values:
-      - ../examples/values-flux-playground_traefik-minikube-vault-helm.yaml
+      - values-flux-playground_traefik-minikube-vault-helm.yaml
     asserts:
       - matchSnapshot: {}

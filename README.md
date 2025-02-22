@@ -1,5 +1,7 @@
 # Generic Helm chart
 
+Check <https://nmarghetti.github.io/generic-helm/> for usage.
+
 ## Init repository
 
 ```shell
@@ -22,36 +24,36 @@ You can get the templates list for `helm/tests/*_test.yaml` with `find helm/temp
 
 ```shell
 # test the helm chart
-helm unittest .
+helm unittest ./generic-chart -f '../tests/*_test.yaml'
 # update tha snapshots
-helm unittest . -u
+helm unittest ./generic-chart -f '../tests/*_test.yaml' -u
 ```
 
 ## Check the helm
 
 ```shell
 # Check the template generation
-helm template . --debug | yq '.'
+helm template ./generic-chart --debug | yq
 
 # Check with values
-helm template . --values ./tests/values-base.yaml --values ./tests/values-enabled.yaml --values ./tests/values-full.yaml --debug
-helm template . --values ./examples/values-flux-playground_traefik-minikube-vault-helm.yaml --debug
+helm template ./generic-chart --values ./tests/values-base.yaml --values ./tests/values-enabled.yaml --values ./tests/values-full.yaml --debug
+helm template ./generic-chart --values ./examples/values-flux-playground_traefik-minikube-vault-helm.yaml --debug
 
 # Lint the helm
-helm lint .
+helm lint ./generic-chart
 ```
 
 ## Check installation
 
 ```shell
 # Check the files embedded inside the helm, there should be none
-helm install apps . --dry-run --output json | jq -r '.chart.files[]?.name'
+helm install apps ./generic-chart --dry-run --output json | jq -r '.chart.files[]?.name'
 # Check the templates embedded inside the helm
-helm install apps . --dry-run --output json | jq -r '.chart.templates[].name'
+helm install apps ./generic-chart --dry-run --output json | jq -r '.chart.templates[].name'
 # Check the full content
-helm install apps . --dry-run --output yaml | yq
+helm install apps ./generic-chart --dry-run --output yaml | yq
 # Check the full content with values
-helm install apps . --values ./tests/values-enabled.yaml --values ./tests/values-full.yaml --dry-run --output yaml | yq
+helm install apps ./generic-chart --values ./tests/values-enabled.yaml --values ./tests/values-full.yaml --dry-run --output yaml | yq
 ```
 
 ## Release
