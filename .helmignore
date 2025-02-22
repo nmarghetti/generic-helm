@@ -1,0 +1,26 @@
+# Patterns to ignore when building packages.
+# This supports shell glob matching, relative path matching, and
+# negation (prefixed with !). Only one pattern per line.
+
+# helm
+.helmignore
+
+# git
+.git*
+
+# test
+tests
+examples
+
+# markdown
+*.md
+
+# scripts
+scripts
+*.sh
+
+# editor
+.editorconfig
+
+# build
+docs
