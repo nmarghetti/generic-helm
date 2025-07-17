@@ -31,8 +31,7 @@ apps:
       labels: {}
       replicas: 1
       image:
-        registry: stefanprodan
-        name: podinfo
+        fullnameOverride: stefanprodan/podinfo:latest
         pullPolicy: IfNotPresent
       ports: [8080]
       container: {}

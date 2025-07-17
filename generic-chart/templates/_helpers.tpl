@@ -71,21 +71,25 @@ Insert config values if defined (including arrays)
 Get docker image for deployment
 */}}
 {{- define "chart.deployment.docker-image" -}}
-  {{- $dockerRegistry := .context.Values.dockerRegistry }}
-  {{- $dockerImage := .appName }}
-  {{- $dockerTag := default "latest" .context.Values.dockerTag }}
-  {{- if .deployment.image }}
-    {{- if .deployment.image.registry }}
-      {{- $dockerRegistry = .deployment.image.registry }}
+  {{- if .deployment.image.fullnameOverride -}}
+    {{- printf "%s" .deployment.image.fullnameOverride }}
+  {{- else -}}
+    {{- $dockerRegistry := .context.Values.dockerRegistry }}
+    {{- $dockerImage := .appName }}
+    {{- $dockerTag := default "latest" .context.Values.dockerTag }}
+    {{- if .deployment.image }}
+      {{- if .deployment.image.registry }}
+        {{- $dockerRegistry = .deployment.image.registry }}
+      {{- end }}
+      {{- if .deployment.image.name }}
+        {{- $dockerImage = .deployment.image.name }}
+      {{- end }}
+      {{- if .deployment.image.tag }}
+        {{- $dockerTag = .deployment.image.tag }}
+      {{- end }}
     {{- end }}
-    {{- if .deployment.image.name }}
-      {{- $dockerImage = .deployment.image.name }}
-    {{- end }}
-    {{- if .deployment.image.tag }}
-      {{- $dockerTag = .deployment.image.tag }}
-    {{- end }}
+    {{- printf "%s/%s:%s" $dockerRegistry $dockerImage $dockerTag }}
   {{- end }}
-  {{- printf "%s/%s:%s" $dockerRegistry $dockerImage $dockerTag }}
 {{- end }}
 
 {{/*
