@@ -1,0 +1,16 @@
+templates:
+  - config.yaml
+  - deployments.yaml
+  - services.yaml
+  - ingress.yaml
+  - external-secrets.yaml
+tests:
+  - it: chart should match snapshot
+    release:
+      name: mychart
+    chart:
+      version: 0.0.1
+    values:
+      - values-base-monoservice.yaml
+    asserts:
+      - matchSnapshot: {}

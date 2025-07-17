@@ -23,6 +23,15 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "chart.component.name" -}}
+  {{- if eq (include "chart.fullname" .context) .appName }}
+    {{- printf "%s" .appName }}
+  {{- else }}
+    {{- printf "%s-%s" (include "chart.fullname" .context) .appName }}
+  {{- end }}
+{{- end }}
+
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -71,9 +80,9 @@ Insert config values if defined (including arrays)
 Get docker image for deployment
 */}}
 {{- define "chart.deployment.docker-image" -}}
-  {{- if .deployment.image.fullnameOverride -}}
+  {{- if .deployment.image.fullnameOverride }}
     {{- printf "%s" .deployment.image.fullnameOverride }}
-  {{- else -}}
+  {{- else }}
     {{- $dockerRegistry := .context.Values.dockerRegistry }}
     {{- $dockerImage := .appName }}
     {{- $dockerTag := default "latest" .context.Values.dockerTag }}
@@ -172,7 +181,7 @@ envFrom:
     {{/* Add from config */}}
     {{- if eq $addEnvFromConfig 1 }}
   - configMapRef:
-      name: {{ include "chart.fullname" .context }}-{{ .appName }}
+      name: {{ include "chart.component.name" ( dict "context" .context "appName" .appName) }}
     {{- end }}
     {{/* Add from container.envFrom */}}
     {{- if eq $addContainerEnvFrom 1 }}
@@ -182,7 +191,7 @@ envFrom:
     {{- end }}
     {{/* Add from vault */}}
     {{- if eq $addEnvFromVault 1 }}
-      {{- $secretName := printf "%s-%s" (include "chart.fullname" .context) .appName }}
+      {{- $secretName := printf "%s" (include "chart.component.name" (dict "context" .context "appName" .appName)) }}
       {{- if .deployment.vault.secretName }}
         {{- $secretName = .deployment.vault.secretName }}
       {{- end }}
@@ -199,7 +208,7 @@ Add realoder annotation to deployment
   {{- $configs := list }}
   {{- if .deployment.config }}
     {{- if gt (len .deployment.config) 0 }}
-      {{- $configs = append $configs ( printf "%s-%s" (include "chart.fullname" .context) .appName) }}
+      {{- $configs = append $configs ( printf "%s" (include "chart.component.name" (dict "context" .context "appName" .appName)) ) }}
     {{- end }}
   {{- end }}
   {{- if .deployment.envFrom }}
@@ -256,7 +265,7 @@ configmap.reloader.stakater.com/reload: {{ $configAnnotation | quote }}
     {{- if .deployment.enabled }}
       {{- if .deployment.vault }}
         {{- if .deployment.vault.secretConfig }}
-          {{- $secretName := printf "%s-%s" (include "chart.fullname" .context) .appName }}
+          {{- $secretName := printf "%s" (include "chart.component.name" (dict "context" .context "appName" .appName)) }}
           {{- if .deployment.vault.secretName }}
             {{- $secretName = .deployment.vault.secretName }}
           {{- end }}
@@ -300,7 +309,7 @@ Generate external secrets for a deployment
   {{- end }}
 
   {{- if ne (len $vaultKeys) 0 }}
-    {{- $secretName := printf "%s-%s" (include "chart.fullname" .context) .appName }}
+    {{- $secretName := printf "%s" (include "chart.component.name" $) }}
     {{- if .config.secretName }}
       {{- $secretName = .config.secretName }}
     {{- end }}

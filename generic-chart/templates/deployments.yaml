@@ -6,7 +6,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" $ }}-{{ $appName }}
+  name: {{ include "chart.component.name" ( dict "context" $ "appName" $appName) }}
   annotations:
     kubectl.kubernetes.io/default-container: app
     {{- include "chart.deployment.reloader-annotation" ( dict "context" $ "appName" $appName "deployment" $deployment ) | nindent 4}}

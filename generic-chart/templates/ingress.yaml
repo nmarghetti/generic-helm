@@ -14,7 +14,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "chart.fullname" $ }}-{{ $appName }}
+  name: {{ include "chart.component.name" ( dict "context" $ "appName" $appName) }}
   {{- if $ingress.annotations }}
   annotations:
     {{- with $ingress.annotations }}
@@ -47,7 +47,7 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ include "chart.fullname" $ }}-{{ $appName }}
+                name: {{ include "chart.component.name" ( dict "context" $ "appName" $appName) }}
                 port:
                   number: {{ default 8080 $ingress.port }}
             path: {{ default "/" $ingress.path }}
@@ -63,7 +63,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ include "chart.fullname" $ }}-{{ $appName }}
+  name: {{ include "chart.component.name" ( dict "context" $ "appName" $appName) }}
   annotations:
     kubernetes.io/ingress.class: {{ default "traefik" $ingress.ingressClassName }}
     {{- with $ingress.annotations }}
@@ -92,7 +92,7 @@ spec:
       match: {{ $ingress.match }}
       services:
         - kind: Service
-          name: {{ include "chart.fullname" $ }}-{{ $appName }}
+          name: {{ include "chart.component.name" ( dict "context" $ "appName" $appName) }}
           port: {{ default 8080 $ingress.port }}
   {{- end }}
 {{- end }}
