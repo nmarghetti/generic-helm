@@ -41,5 +41,11 @@ apps:
       enabled: true
       annotations: {}
       labels: {}
-      kind: networking
-      host: play.local
+      kind: traefik
+      routes:
+        - kind: Rule
+          match: Host(`play.local`)
+          services:
+            - kind: Service
+              name: ${servicename}
+              port: 8080

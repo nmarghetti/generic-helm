@@ -39,7 +39,7 @@ spec:
   {{- if $ingress.rules }}
   rules:
     {{- with $ingress.rules }}
-      {{- toYaml . | replace "${servicename}" (printf "%s-%s" (include "chart.fullname" $) $appName ) | nindent 4 }}
+      {{- toYaml . | replace "${servicename}" (printf "%s" (include "chart.component.name" ( dict "context" $ "appName" $appName)) ) | nindent 4 }}
     {{- end }}
   {{- else }}
   rules:
@@ -84,7 +84,7 @@ spec:
   {{- if $ingress.routes }}
   routes:
     {{- with $ingress.routes }}
-      {{- toYaml . | replace "${servicename}" (printf "%s-%s" (include "chart.fullname" $) $appName ) | nindent 4 }}
+      {{- toYaml . | replace "${servicename}" (printf "%s" (include "chart.component.name" ( dict "context" $ "appName" $appName) )) | nindent 4 }}
     {{- end }}
   {{- else }}
   routes:
