@@ -54,48 +54,6 @@ chart should match snapshot:
                 - containerPort: 8080
   3: |
     apiVersion: v1
-    kind: Service
-    metadata:
-      labels:
-        app.kubernetes.io/component: monoservice
-        app.kubernetes.io/instance: mychart
-        app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: play
-        app.kubernetes.io/version: na
-        helm.sh/chart: generic-chart-0.0.1
-      name: monoservice
-    spec:
-      ports:
-        - port: 8080
-          targetPort: 8080
-      selector:
-        app.kubernetes.io/component: monoservice
-        app.kubernetes.io/instance: mychart
-        app.kubernetes.io/name: play
-      type: ClusterIP
-  4: |
-    apiVersion: traefik.io/v1alpha1
-    kind: IngressRoute
-    metadata:
-      annotations:
-        kubernetes.io/ingress.class: traefik
-      labels:
-        app.kubernetes.io/instance: mychart
-        app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: play
-        app.kubernetes.io/version: na
-        helm.sh/chart: generic-chart-0.0.1
-      name: monoservice
-    spec:
-      routes:
-        - kind: Rule
-          match: Host(`play.local`)
-          services:
-            - kind: Service
-              name: monoservice
-              port: 8080
-  5: |
-    apiVersion: v1
     data:
       annotations: |
         last-synced: {{ now }}
@@ -139,7 +97,7 @@ chart should match snapshot:
     kind: ConfigMap
     metadata:
       name: monoservice-secretconfig
-  6: |
+  4: |
     apiVersion: external-secrets.io/v1beta1
     kind: ExternalSecret
     metadata:
@@ -177,3 +135,45 @@ chart should match snapshot:
                 name: monoservice-secretconfig
               target: Annotations
           type: Opaque
+  5: |
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      annotations:
+        kubernetes.io/ingress.class: traefik
+      labels:
+        app.kubernetes.io/instance: mychart
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: play
+        app.kubernetes.io/version: na
+        helm.sh/chart: generic-chart-0.0.1
+      name: monoservice
+    spec:
+      routes:
+        - kind: Rule
+          match: Host(`play.local`)
+          services:
+            - kind: Service
+              name: monoservice
+              port: 8080
+  6: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app.kubernetes.io/component: monoservice
+        app.kubernetes.io/instance: mychart
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: play
+        app.kubernetes.io/version: na
+        helm.sh/chart: generic-chart-0.0.1
+      name: monoservice
+    spec:
+      ports:
+        - port: 8080
+          targetPort: 8080
+      selector:
+        app.kubernetes.io/component: monoservice
+        app.kubernetes.io/instance: mychart
+        app.kubernetes.io/name: play
+      type: ClusterIP
