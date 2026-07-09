@@ -17,7 +17,7 @@ git submodule update --remote
 
 ## Unit test
 
-First ensure to install helm unit test plugin `helm plugin install https://github.com/quintush/helm-unittest --version v0.2.9`.
+First ensure to install helm unit test plugin `helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false`.
 You can also update it with `helm plugin update unittest`.
 
 You can get the templates list for `helm/tests/*_test.yaml` with `find helm/templates -name "*.yaml" -o -name "*.yml" | sort | sed -re 's#helm/templates/# - #'`
