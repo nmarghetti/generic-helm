@@ -20,7 +20,7 @@ git submodule update --remote
 First ensure to install helm unit test plugin `helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false`.
 You can also update it with `helm plugin update unittest`.
 
-You can get the templates list for `helm/tests/*_test.yaml` with `find helm/templates -name "*.yaml" -o -name "*.yml" | sort | sed -re 's#helm/templates/# - #'`
+You can get the templates list for `generic-chart/tests/*_test.yaml` with `find generic-chart/templates -name "*.yaml" -o -name "*.yml" | xargs -r -n1 basename | sort | sed 's/^/ - /'`
 
 ```shell
 # test the helm chart
